@@ -1,4 +1,3 @@
-
 # Projeto de Dados Educacionais
 
 Este é um projeto web interativo que facilita o acesso e a visualização de dados educacionais do [INEP](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/indicadores-educacionais/taxas-de-rendimento-escolar). A plataforma oferece gráficos, mapas e insights para ajudar pesquisadores, gestores e outros profissionais a tomarem decisões estratégicas baseadas em dados.
@@ -25,30 +24,7 @@ Este é um projeto web interativo que facilita o acesso e a visualização de da
 
 ## Estrutura do Projeto
 
-.
-**├── venv/                           # Ambiente virtual Python
-│   ├── Include/
-│   ├── Lib/
-│   ├── Scripts/
-│   ├── pycache/               # Arquivos compilados Python
-│   └── pyvenv.cfg                 # Configuração do ambiente virtual
-├── static/                         # Arquivos estáticos
-│   ├── JS/
-│   │   └── script.js              # JavaScript customizado
-│   └── style.css                  # Estilos CSS
-├── templates/                      # Templates HTML
-│   ├── dashboard.html             # Página de dashboard
-│   └── index.html                 # Página inicial
-├── file/                           # Diretório de arquivos de dados
-│   └── tx_rend_brasil_regioes_ufs_2024.xlsx  # Dados em Excel
-├── app.py                          # Aplicação principal Flask
-├── data_loader.py                  # Carregamento e processamento de dados
-├── statistics_calculator.py        # Cálculos estatísticos
-├── visualization_generator.py      # Geração de visualizações
-├── requirements.txt                # Dependências do projeto
-├── README.MD                       # Documentação do projeto
-└── .gitignore                      # Arquivos ignorados pelo Git (implícito)**
-
+![1756862283254](image/README/1756862283254.png)
 
 ## Arquitetura e Evolução do Projeto
 
@@ -87,7 +63,6 @@ Responsável pela extração e limpeza dos dados:
 * Realiza conversões de tipos de dados
 * Trata valores missing
 
-
 ### statistics_calculator.py - Análise Estatística
 
 Realiza cálculos e gera insights:
@@ -100,7 +75,7 @@ Realiza cálculos e gera insights:
 
 Os templates usam a sintaxe Jinja2 para renderizar dados dinâmicos
 
-## Bibliotecas e frameworks 
+## Bibliotecas e frameworks
 
 ## Backend (Python)
 
