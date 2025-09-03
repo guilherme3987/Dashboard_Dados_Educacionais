@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Dados Educacionais</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="static/style.css" rel="stylesheet">
+
+</head>
+<body class="bg-slate-900 text-white font-sans min-h-screen">
+    <header class="bg-slate-800 p-6 flex justify-between items-center shadow-lg sticky top-0 z-50">
+        <h1 class="text-2xl font-bold text-emerald-400">Dashboard de Dados Educacionais</h1>
+        <a href="{{ url_for('index') }}" class="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition-colors duration-300">Voltar à Página Inicial</a>
+    </header>
+    <main class="p-8">
+        {% if erro %}
+        <div class="bg-red-500 text-white p-4 rounded-lg mb-6">
+            <h2 class="text-xl font-semibold mb-2">Erro</h2>
+            <p>{{ erro }}</p>
+        </div>
+        {% endif %}
+        
+        <!-- Tabs de navegação -->
+        <div class="flex border-b border-slate-700 mb-6">
+            <button class="tab-btn py-2 px-4 font-medium text-emerald-300 border-b-2 border-emerald-400" data-tab="dados">Dados</button>
+            <button class="tab-btn py-2 px-4 font-medium text-slate-400 hover:text-white" data-tab="graficos">Gráficos</button>
+            <button class="tab-btn py-2 px-4 font-medium text-slate-400 hover:text-white" data-tab="estatisticas">Estatísticas</button>
+        </div>
+        
+        <!-- Tab de Dados -->
+        <div id="dados" class="tab-content active">
+            <section class="bg-slate-800 p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-semibold mb-4 text-emerald-300">Dados de Taxa de Rendimento - Brasil, Regiões e UFs (2024)</h2>
+                
+                {% if dados %}
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-slate-400 mb-4">
+                    <p class="mb-2 sm:mb-0">Registros exibidos: <span id="registros-exibidos" class="font-bold">{{ dados|length }}</span> de <span class="font-bold">{{ total_registros }}</span></p>
+                    <p>Colunas disponíveis: 
+                        {% if dados %}
+                            <span class="font-bold">{{ dados[0].keys()|join(', ') }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+                
+                <div class="overflow-x-auto rounded-lg shadow-md max-h-[70vh]">
+                    <table class="w-full text-left text-sm text-slate-300">
+                        <thead class="bg-slate-700 text-xs uppercase text-slate-200 sticky top-0">
+                            <tr>
+                                {% if dados %}
+                                    {% for coluna in dados[0].keys() %}
+                                        <th scope="col" class="px-6 py-3">{{ coluna }}</th>
+                                    {% endfor %}
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-corpo">
+                            {% for linha in dados %}
+                            <tr class="border-b border-slate-700 hover:bg-slate-700/50 transition-colors duration-150">
+                                {% for valor in linha.values() %}
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ valor }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button id="btn-mostrar-mais" class="px-8 py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-lg transition-colors duration-300 transform hover:scale-105">
+                        Mostrar Mais Linhas
+                    </button>
+                </div>
+
+                {% else %}
+                <div class="bg-slate-700 p-6 rounded-lg text-center">
+                    <p class="text-slate-400">Nenhum dado disponível para exibição.</p>
+                </div>
+                {% endif %}
+            </section>
+        </div>
+        
+        <!-- Tab de Gráficos -->
+        <div id="graficos" class="tab-content">
+            <section class="bg-slate-800 p-6 rounded-xl shadow-lg mb-6">
+                <h2 class="text-2xl font-semibold mb-6 text-emerald-300">Visualizações dos Dados</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Histogramas -->
+                    {% if graficos.histograma_taxa_de_aprovação %}
+                    <div class="grafico">
+                        <h3 class="text-lg font-semibold mb-2 text-slate-800">Distribuição da Taxa de Aprovação</h3>
+                        <img src="{{ graficos.histograma_taxa_de_aprovação }}" alt="Histograma Taxa de Aprovação">
+                    </div>
+                    {% endif %}
+                    
+                    {% if graficos.histograma_taxa_de_reprovação %}
+                    <div class="grafico">
+                        <h3 class="text-lg font-semibold mb-2 text-slate-800">Distribuição da Taxa de Reprovação</h3>
+                        <img src="{{ graficos.histograma_taxa_de_reprovação }}" alt="Histograma Taxa de Reprovação">
+                    </div>
+                    {% endif %}
+                    
+                    {% if graficos.histograma_taxa_de_abandono %}
+                    <div class="grafico">
+                        <h3 class="text-lg font-semibold mb-2 text-slate-800">Distribuição da Taxa de Abandono</h3>
+                        <img src="{{ graficos.histograma_taxa_de_abandono }}" alt="Histograma Taxa de Abandono">
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Gráficos de Pizza -->
+                    {% if graficos.pie_dependencia %}
+                    <div class="grafico">
+                        <h3 class="text-lg font-semibold mb-2 text-slate-800">Composição por Dependência Administrativa</h3>
+                        <img src="{{ graficos.pie_dependencia }}" alt="Pie Dependência Administrativa">
+                    </div>
+                    {% endif %}
+                    
+                    {% if graficos.pie_localizacao %}
+                    <div class="grafico">
+                        <h3 class="text-lg font-semibold mb-2 text-slate-800">Composição por Localização</h3>
+                        <img src="{{ graficos.pie_localizacao }}" alt="Pie Localização">
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Gráfico de Linha -->
+                    {% if graficos.linha_temporal %}
+                    <div class="grafico md:col-span-2">
+                        <h3 class="text-lg font-semibold mb-2 text-slate-800">Evolução das Taxas de Rendimento por Ano</h3>
+                        <img src="{{ graficos.linha_temporal }}" alt="Linha Temporal">
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Gráfico de Barras -->
+                    {% if graficos.barras_comparativas %}
+                    <div class="grafico md:col-span-2">
+                        <h3 class="text-lg font-semibold mb-2 text-slate-800">Taxas Médias por Região</h3>
+                        <img src="{{ graficos.barras_comparativas }}" alt="Barras Comparativas">
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Heatmap -->
+                    {% if graficos.heatmap_correlacao %}
+                    <div class="grafico md:col-span-2">
+                        <h3 class="text-lg font-semibold mb-2 text-slate-800">Correlação entre as Taxas de Rendimento</h3>
+                        <img src="{{ graficos.heatmap_correlacao }}" alt="Heatmap Correlação">
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+        
+        <!-- Tab de Estatísticas -->
+        <div id="estatisticas" class="tab-content">
+            <section class="bg-slate-800 p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-semibold mb-6 text-emerald-300">Estatísticas Descritivas</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {% for taxa, stats in estatisticas.items() %}
+                    <div class="estatistica-card">
+                        <h3 class="text-lg font-semibold mb-4 text-emerald-300">{{ taxa }}</h3>
+                        
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Média:</span>
+                                <span class="font-bold">{{ stats.média }}%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Mediana:</span>
+                                <span class="font-bold">{{ stats.mediana }}%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Desvio Padrão:</span>
+                                <span class="font-bold">{{ stats.desvio_padrão }}%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Mínimo:</span>
+                                <span class="font-bold">{{ stats.mínimo }}%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Máximo:</span>
+                                <span class="font-bold">{{ stats.máximo }}%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Q1 (25%):</span>
+                                <span class="font-bold">{{ stats.q1 }}%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Q3 (75%):</span>
+                                <span class="font-bold">{{ stats.q3 }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </main>
+</body>
+    <script src="static/script.js"></script>
+</html>
